@@ -114,14 +114,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ biomarkers }) => {
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} />
         ))}
-        
+
         {isLoading && (
           <div className="flex items-center gap-2 text-gray-500">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span className="text-sm">Thinking...</span>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -184,7 +184,7 @@ interface MessageBubbleProps {
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const isUser = message.role === 'user';
-  
+
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-[80%] ${isUser ? 'order-2' : 'order-1'}`}>
@@ -198,9 +198,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         </div>
         <p className="text-xs text-gray-400 mt-1 px-2">
-          {message.timestamp.toLocaleTimeString([], { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+          {message.timestamp.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
           })}
         </p>
       </div>

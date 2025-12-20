@@ -24,19 +24,19 @@ function App() {
                 </div>
               </Link>
               <nav className="hidden md:flex items-center gap-6">
-                <Link 
-                  to="/" 
+                <Link
+                  to="/"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Home
                 </Link>
-                <Link 
-                  to="/demo" 
+                <Link
+                  to="/demo"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Try Demo
                 </Link>
-                <Link 
+                <Link
                   to="/upload"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
@@ -64,7 +64,7 @@ function App() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">SecondView</h3>
                 <p className="text-sm text-gray-600">
-                  Educational blood test analysis powered by AI. 
+                  Educational blood test analysis powered by AI.
                   Understand your health, one biomarker at a time.
                 </p>
               </div>

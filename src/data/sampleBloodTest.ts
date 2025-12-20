@@ -178,21 +178,21 @@ export function calculateBiomarkerStatus(
 ): Biomarker['status'] {
   const borderlineThreshold = 0.1; // 10% threshold for borderline
   const range = max - min;
-  
+
   if (value < min) {
     if (value >= min - (range * borderlineThreshold)) {
       return 'borderline-low';
     }
     return 'low';
   }
-  
+
   if (value > max) {
     if (value <= max + (range * borderlineThreshold)) {
       return 'borderline-high';
     }
     return 'high';
   }
-  
+
   return 'normal';
 }
 

@@ -14,7 +14,7 @@ export const Hero: React.FC = () => {
             Understand Your
             <span className="text-blue-600"> Blood Test Results</span>
           </h1>
-          
+
           {/* Subtitle */}
           <p className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Get a second view of your health with AI-powered analysis that explains your biomarkers in simple terms—just like a doctor would.
@@ -22,14 +22,14 @@ export const Hero: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link 
-              to="/demo" 
+            <Link
+              to="/demo"
               className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
             >
               Try Sample Results
             </Link>
-            <Link 
-              to="/upload" 
+            <Link
+              to="/upload"
               className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-colors"
             >
               Upload Your Test

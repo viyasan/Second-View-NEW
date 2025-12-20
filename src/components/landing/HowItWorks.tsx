@@ -43,7 +43,7 @@ export const HowItWorks: React.FC = () => {
             <div className="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
               {index + 1}
             </div>
-            
+
             {/* Card */}
             <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 h-full">
               <div className="flex justify-center mb-4">{step.icon}</div>
@@ -73,17 +73,17 @@ export const HowItWorks: React.FC = () => {
           Ready to understand your health better?
         </h3>
         <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-          Whether you want to explore with our sample data or upload your own results, 
+          Whether you want to explore with our sample data or upload your own results,
           we're here to help you make sense of your biomarkers.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a 
+          <a
             href="/demo"
             className="px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             View Sample Analysis
           </a>
-          <a 
+          <a
             href="/upload"
             className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
           >

@@ -98,12 +98,12 @@ export const BiomarkerCard: React.FC<BiomarkerCardProps> = ({ biomarker }) => {
             </div>
             <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
               {/* Normal range highlight */}
-              <div 
+              <div
                 className="absolute h-full bg-green-200"
                 style={{ left: '0%', right: '0%' }}
               />
               {/* Value marker */}
-              <div 
+              <div
                 className={`absolute w-1 h-full ${
                   statusColor === 'green' ? 'bg-green-600' :
                   statusColor === 'yellow' ? 'bg-yellow-600' :
