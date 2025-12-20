@@ -38,16 +38,6 @@ export async function analyzeBloodTest(
 ): Promise<AnalysisResponse> {
   const { biomarkers, userContext } = request;
 
-  // Prepare biomarker data for the prompt
-  const biomarkerSummary = biomarkers.map(b => {
-    const statusEmoji =
-      b.status === 'normal' ? '✅' :
-      b.status.includes('borderline') ? '⚠️' :
-      '🔴';
-
-    return `${statusEmoji} ${b.displayName}: ${b.value} ${b.unit} (Normal: ${b.normalRangeMin}-${b.normalRangeMax} ${b.unit}) - Status: ${b.status}`;
-  }).join('\n');
-
   const categorizedMarkers = groupByCategory(biomarkers);
   const categoryText = Object.entries(categorizedMarkers)
     .map(([category, markers]) => {
