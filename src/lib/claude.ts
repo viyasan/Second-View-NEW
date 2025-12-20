@@ -40,18 +40,18 @@ export async function analyzeBloodTest(
 
   // Prepare biomarker data for the prompt
   const biomarkerSummary = biomarkers.map(b => {
-    const statusEmoji = 
+    const statusEmoji =
       b.status === 'normal' ? '✅' :
       b.status.includes('borderline') ? '⚠️' :
       '🔴';
-    
+
     return `${statusEmoji} ${b.displayName}: ${b.value} ${b.unit} (Normal: ${b.normalRangeMin}-${b.normalRangeMax} ${b.unit}) - Status: ${b.status}`;
   }).join('\n');
 
   const categorizedMarkers = groupByCategory(biomarkers);
   const categoryText = Object.entries(categorizedMarkers)
     .map(([category, markers]) => {
-      const markerList = markers.map(m => 
+      const markerList = markers.map(m =>
         `  - ${m.displayName}: ${m.value} ${m.unit} [${m.status}]`
       ).join('\n');
       return `${category}:\n${markerList}`;
@@ -114,7 +114,7 @@ export async function askFollowUpQuestion(
   bloodTest: { biomarkers: Biomarker[] },
   conversationHistory: ClaudeMessage[]
 ): Promise<string> {
-  const biomarkerContext = bloodTest.biomarkers.map(b => 
+  const biomarkerContext = bloodTest.biomarkers.map(b =>
     `${b.displayName}: ${b.value} ${b.unit} (${b.status})`
   ).join(', ');
 
@@ -177,17 +177,17 @@ function parseAnalysisResponse(
 ): AnalysisResponse {
   // Extract different sections from the analysis
   const lines = analysisText.split('\n');
-  
+
   let summary = '';
   let overallInsights: string[] = [];
   let questionsToAskDoctor: string[] = [];
-  
+
   let currentSection = '';
-  
+
   lines.forEach(line => {
     const trimmed = line.trim();
-    
-    if (trimmed.toLowerCase().includes('overall summary') || 
+
+    if (trimmed.toLowerCase().includes('overall summary') ||
         trimmed.toLowerCase().includes('general picture')) {
       currentSection = 'summary';
     } else if (trimmed.toLowerCase().includes('key takeaway') ||
@@ -209,14 +209,14 @@ function parseAnalysisResponse(
 
   // Create biomarker-specific analyses
   const biomarkerAnalyses: AnalysisResponse['biomarkerAnalyses'] = {};
-  
+
   biomarkers.forEach(marker => {
     if (marker.status !== 'normal') {
       // Extract relevant information about this biomarker from the text
-      const concernLevel = 
+      const concernLevel =
         marker.status === 'high' || marker.status === 'low' ? 'discuss-with-doctor' :
         marker.status.includes('borderline') ? 'monitor' : 'none';
-      
+
       biomarkerAnalyses[marker.name] = {
         interpretation: `Your ${marker.displayName} is ${marker.status.replace('-', ' ')}. This may warrant attention.`,
         concernLevel,
@@ -247,7 +247,7 @@ function getRelatedMarkers(marker: Biomarker, allMarkers: Biomarker[]): string[]
   };
 
   const related = relationships[marker.name] || [];
-  return related.filter(name => 
+  return related.filter(name =>
     allMarkers.some(m => m.name === name)
   );
 }
@@ -279,7 +279,7 @@ export function generateBasicAnalysis(biomarkers: Biomarker[]): AnalysisResponse
     'Always discuss results with your healthcare provider'
   ];
 
-  const questionsToAskDoctor = flaggedMarkers.length > 0 
+  const questionsToAskDoctor = flaggedMarkers.length > 0
     ? [
         'What could be causing the values outside the normal range?',
         'Do I need any follow-up tests?',

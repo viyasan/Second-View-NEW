@@ -26,7 +26,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   labName
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'chat'>('overview');
-  
+
   // Group biomarkers by category
   const biomarkersByCategory = biomarkers.reduce((acc, marker) => {
     if (!acc[marker.category]) {
@@ -39,7 +39,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   // Calculate summary stats
   const normalCount = biomarkers.filter(b => b.status === 'normal').length;
   const flaggedCount = biomarkers.filter(b => b.status !== 'normal').length;
-  const concerningCount = biomarkers.filter(b => 
+  const concerningCount = biomarkers.filter(b =>
     b.status === 'high' || b.status === 'low'
   ).length;
 

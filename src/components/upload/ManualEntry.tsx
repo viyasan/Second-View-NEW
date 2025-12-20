@@ -56,14 +56,14 @@ export const ManualEntry: React.FC = () => {
   };
 
   const handleValueChange = (index: number, value: string) => {
-    setSelectedBiomarkers(prev => prev.map((marker, i) => 
+    setSelectedBiomarkers(prev => prev.map((marker, i) =>
       i === index ? { ...marker, value } : marker
     ));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Convert to Biomarker format
     const biomarkers: Biomarker[] = selectedBiomarkers
       .filter(marker => marker.value !== '')

@@ -19,7 +19,7 @@ export const HealthSummary: React.FC<HealthSummaryProps> = ({
 }) => {
   // Calculate category summaries
   const categoryStats = getCategoryStats(biomarkers);
-  
+
   return (
     <div className="space-y-6">
       {/* Overall Summary */}
@@ -88,7 +88,7 @@ export const HealthSummary: React.FC<HealthSummaryProps> = ({
       {/* Educational Note */}
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <p className="text-sm text-gray-600 text-center">
-          💡 <strong>Remember:</strong> This analysis is meant to help you understand your results. 
+          <strong>Remember:</strong> This analysis is meant to help you understand your results.
           Your healthcare provider has access to your full medical history and can provide personalized guidance.
         </p>
       </div>
@@ -104,7 +104,7 @@ interface CategoryStats {
 
 function getCategoryStats(biomarkers: Biomarker[]): Record<string, CategoryStats> {
   const stats: Record<string, CategoryStats> = {};
-  
+
   biomarkers.forEach(marker => {
     if (!stats[marker.category]) {
       stats[marker.category] = { total: 0, normal: 0, flagged: 0 };
@@ -116,7 +116,7 @@ function getCategoryStats(biomarkers: Biomarker[]): Record<string, CategoryStats
       stats[marker.category].flagged++;
     }
   });
-  
+
   return stats;
 }
 
@@ -128,7 +128,7 @@ interface CategoryCardProps {
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, stats }) => {
   const percentage = (stats.normal / stats.total) * 100;
   const allNormal = stats.flagged === 0;
-  
+
   return (
     <div className={`p-4 rounded-lg border-2 ${
       allNormal ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'
@@ -144,7 +144,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, stats }) => {
       </div>
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded-full h-2">
-        <div 
+        <div
           className={`h-2 rounded-full transition-all ${
             allNormal ? 'bg-green-500' : 'bg-yellow-500'
           }`}

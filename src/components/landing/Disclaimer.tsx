@@ -14,15 +14,15 @@ export const Disclaimer: React.FC = () => {
           </h3>
           <div className="text-amber-800 space-y-2">
             <p>
-              <strong>SecondView is an educational tool</strong> designed to help you understand your blood test results. 
+              <strong>SecondView is an educational tool</strong> designed to help you understand your blood test results.
               This is <strong>not medical advice, diagnosis, or treatment</strong>.
             </p>
             <p>
-              Our AI-powered analysis explains biomarkers in simple terms, similar to how a family doctor or naturopath 
+              Our AI-powered analysis explains biomarkers in simple terms, similar to how a family doctor or naturopath
               might explain results during a consultation. However, it does not replace professional medical advice.
             </p>
             <p className="font-semibold">
-              Always discuss your results with a qualified healthcare provider before making any health decisions, 
+              Always discuss your results with a qualified healthcare provider before making any health decisions,
               starting or stopping medications, or changing your treatment plan.
             </p>
           </div>
@@ -36,7 +36,7 @@ export const MinimalDisclaimer: React.FC = () => {
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4">
       <p className="text-sm text-gray-700 text-center">
-        <strong>Educational purposes only.</strong> Not medical advice. 
+        <strong>Educational purposes only.</strong> Not medical advice.
         Always consult your healthcare provider about your results.
       </p>
     </div>
