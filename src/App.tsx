@@ -5,43 +5,53 @@ import { LandingPage } from './pages/LandingPage';
 import { DemoPage } from './pages/DemoPage';
 import { UploadPage } from './pages/UploadPage';
 import { ResultsPage } from './pages/ResultsPage';
-import { FileText } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="min-h-screen bg-cream flex flex-col">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <header className="bg-cream/80 backdrop-blur-md border-b border-warm-gray-100 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-8 lg:px-16 py-4">
             <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-2">
-                <FileText className="w-8 h-8 text-blue-600" />
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">SecondView</h1>
-                  <p className="text-xs text-gray-500">AI Blood Test Analysis</p>
+              {/* Logo */}
+              <Link to="/" className="flex items-center gap-3 group">
+                <div className="w-10 h-10 bg-charcoal rounded-xl flex items-center justify-center">
+                  <span className="text-lime font-bold text-lg">S</span>
                 </div>
+                <span className="text-xl font-semibold text-charcoal">SecondView</span>
               </Link>
-              <nav className="hidden md:flex items-center gap-6">
+
+              {/* Navigation */}
+              <nav className="hidden md:flex items-center gap-8">
                 <Link
                   to="/"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
                 >
                   Home
                 </Link>
                 <Link
                   to="/demo"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
                 >
-                  Try Demo
+                  Demo
                 </Link>
                 <Link
                   to="/upload"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-white rounded-full font-medium hover:bg-warm-gray-800 transition-all group"
                 >
-                  Upload Test
+                  Get Started
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </nav>
+
+              {/* Mobile menu button */}
+              <button className="md:hidden p-2 text-charcoal">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
@@ -57,53 +67,64 @@ function App() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">SecondView</h3>
-                <p className="text-sm text-gray-600">
-                  Educational blood test analysis powered by AI.
-                  Understand your health, one biomarker at a time.
+        <footer className="bg-charcoal text-white">
+          <div className="max-w-7xl mx-auto px-8 lg:px-16 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+              {/* Brand */}
+              <div className="md:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                    <span className="text-lime font-bold text-lg">S</span>
+                  </div>
+                  <span className="text-xl font-semibold">SecondView</span>
+                </div>
+                <p className="text-warm-gray-400 max-w-sm leading-relaxed">
+                  AI-powered blood test analysis that helps you understand your health in plain English.
                 </p>
               </div>
+
+              {/* Links */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Important</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Not medical advice</li>
-                  <li>• Educational purposes only</li>
-                  <li>• Always consult your doctor</li>
-                  <li>• Your data is private</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Resources</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
+                <h3 className="font-semibold mb-4">Product</h3>
+                <ul className="space-y-3 text-warm-gray-400">
                   <li>
-                    <a href="#" className="hover:text-blue-600 transition-colors">
-                      About Us
-                    </a>
+                    <Link to="/demo" className="hover:text-white transition-colors">
+                      Demo
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-600 transition-colors">
+                    <Link to="/upload" className="hover:text-white transition-colors">
+                      Upload Test
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-4">Legal</h3>
+                <ul className="space-y-3 text-warm-gray-400">
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
                       Privacy Policy
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-blue-600 transition-colors">
+                    <a href="#" className="hover:text-white transition-colors">
                       Terms of Service
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-blue-600 transition-colors">
-                      Contact
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
-            <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
-              <p>© 2024 SecondView. All rights reserved.</p>
+
+            {/* Bottom bar */}
+            <div className="mt-12 pt-8 border-t border-warm-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-warm-gray-500 text-sm">
+                © 2024 SecondView. All rights reserved.
+              </p>
+              <p className="text-warm-gray-500 text-sm text-center md:text-right">
+                For educational purposes only. Not medical advice. Always consult your doctor.
+              </p>
             </div>
           </div>
         </footer>

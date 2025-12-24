@@ -1,96 +1,103 @@
 // components/landing/HowItWorks.tsx
 
 import React from 'react';
-import { Upload, Brain, MessageCircle, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Upload, Brain, MessageCircle, ArrowRight } from 'lucide-react';
 
 export const HowItWorks: React.FC = () => {
   const steps = [
     {
-      icon: <Upload className="w-8 h-8 text-blue-600" />,
-      title: 'Upload or Enter Your Results',
-      description: 'Upload a PDF of your blood test or manually enter your biomarker values. We support all common lab formats.'
+      number: '01',
+      icon: <Upload className="w-6 h-6" />,
+      title: 'Upload your results',
+      description: 'Upload a PDF or manually enter your biomarker values. We support all major lab formats.',
     },
     {
-      icon: <Brain className="w-8 h-8 text-blue-600" />,
-      title: 'AI Analyzes Your Data',
-      description: 'Our AI reviews your biomarkers and compares them to normal ranges, identifying any values that need attention.'
+      number: '02',
+      icon: <Brain className="w-6 h-6" />,
+      title: 'AI analyzes your data',
+      description: 'Our AI reviews each biomarker, comparing values to optimal ranges and identifying patterns.',
     },
     {
-      icon: <MessageCircle className="w-8 h-8 text-blue-600" />,
-      title: 'Get Plain-Language Explanations',
-      description: 'Receive easy-to-understand explanations of what your results mean, similar to what a doctor would tell you.'
+      number: '03',
+      icon: <MessageCircle className="w-6 h-6" />,
+      title: 'Get clear explanations',
+      description: 'Receive plain-language insights about what your results mean for your health.',
     },
-    {
-      icon: <CheckCircle className="w-8 h-8 text-blue-600" />,
-      title: 'Ask Follow-Up Questions',
-      description: 'Chat with our AI to dive deeper into your results and get answers to your specific questions.'
-    }
   ];
 
   return (
-    <div className="py-16">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Get clarity on your blood test results in minutes
-        </p>
-      </div>
+    <section className="py-24 lg:py-32 bg-cream">
+      <div className="max-w-7xl mx-auto px-8 lg:px-16">
+        {/* Section header */}
+        <div className="max-w-2xl mb-16 lg:mb-24">
+          <p className="text-sm font-medium text-warm-gray-400 uppercase tracking-widest mb-4">
+            How it works
+          </p>
+          <h2 className="text-4xl lg:text-5xl font-semibold text-charcoal leading-tight">
+            Get clarity on your health in three simple steps
+          </h2>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {steps.map((step, index) => (
-          <div key={index} className="relative">
-            {/* Step Number */}
-            <div className="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
-              {index + 1}
-            </div>
+        {/* Steps */}
+        <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+          {steps.map((step, index) => (
+            <div key={index} className="relative group">
+              {/* Step number */}
+              <div className="text-7xl lg:text-8xl font-bold text-warm-gray-100 mb-4 transition-colors group-hover:text-warm-gray-200">
+                {step.number}
+              </div>
 
-            {/* Card */}
-            <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 h-full">
-              <div className="flex justify-center mb-4">{step.icon}</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 text-center">
+              {/* Icon */}
+              <div className="w-12 h-12 bg-charcoal rounded-2xl flex items-center justify-center text-white mb-6">
+                {step.icon}
+              </div>
+
+              {/* Content */}
+              <h3 className="text-xl font-semibold text-charcoal mb-3">
                 {step.title}
               </h3>
-              <p className="text-gray-600 text-sm text-center">
+              <p className="text-warm-gray-500 leading-relaxed">
                 {step.description}
               </p>
+
+              {/* Connector line (hidden on last item and mobile) */}
+              {index < steps.length - 1 && (
+                <div className="hidden lg:block absolute top-16 left-full w-16 border-t-2 border-dashed border-warm-gray-200 -translate-x-8" />
+              )}
             </div>
+          ))}
+        </div>
 
-            {/* Connector Arrow (hidden on last step and mobile) */}
-            {index < steps.length - 1 && (
-              <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <svg className="w-8 h-8 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            )}
+        {/* CTA Section */}
+        <div className="mt-24 lg:mt-32 p-8 lg:p-12 bg-charcoal rounded-3xl">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div>
+              <h3 className="text-2xl lg:text-3xl font-semibold text-white mb-2">
+                Ready to understand your results?
+              </h3>
+              <p className="text-warm-gray-400 text-lg">
+                Start with our demo or upload your own test results.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/demo"
+                className="inline-flex items-center justify-center px-6 py-3 bg-transparent text-white rounded-full font-medium border-2 border-warm-gray-600 hover:border-warm-gray-500 transition-all"
+              >
+                View Demo
+              </Link>
+              <Link
+                to="/upload"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-lime text-charcoal rounded-full font-medium hover:bg-lime/90 transition-all group"
+              >
+                Upload Your Test
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* CTA Section */}
-      <div className="mt-16 text-center bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8">
-        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-          Ready to understand your health better?
-        </h3>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-          Whether you want to explore with our sample data or upload your own results,
-          we're here to help you make sense of your biomarkers.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="/demo"
-            className="px-8 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
-          >
-            View Sample Analysis
-          </a>
-          <a
-            href="/upload"
-            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-          >
-            Upload Your Test
-          </a>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
