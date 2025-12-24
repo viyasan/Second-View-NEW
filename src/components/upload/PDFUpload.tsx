@@ -70,7 +70,9 @@ export const PDFUpload: React.FC<PDFUploadProps> = ({ onExtracted, onError, onBa
     try {
       setUploadProgress('Processing with OCR (this may take a minute)...');
 
-      const response = await fetch('/api/ocr/process', {
+      // Use environment variable for API URL in production, fallback to relative path for dev
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiBase}/api/ocr/process`, {
         method: 'POST',
         body: formData,
       });
