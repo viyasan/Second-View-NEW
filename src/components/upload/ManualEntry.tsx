@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Biomarker } from '../../types/bloodTest';
 import { calculateBiomarkerStatus } from '../../data/sampleBloodTest';
 import { MinimalDisclaimer } from '../landing/Disclaimer';
-import { Plus, Trash2, Save } from 'lucide-react';
+import { Plus, Trash2, Save, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface BiomarkerInput {
   name: string;
@@ -15,6 +15,24 @@ interface BiomarkerInput {
   normalRangeMin: number;
   normalRangeMax: number;
   category: string;
+}
+
+interface ExtractedBiomarker {
+  name: string;
+  displayName: string;
+  value: number;
+  unit: string;
+  normalRangeMin: number;
+  normalRangeMax: number;
+  category: string;
+  confidence?: number;
+  rawText?: string;
+}
+
+interface ManualEntryProps {
+  initialBiomarkers?: ExtractedBiomarker[];
+  showReviewMessage?: boolean;
+  onBack?: () => void;
 }
 
 const commonBiomarkers: Omit<BiomarkerInput, 'value'>[] = [
@@ -40,12 +58,29 @@ const commonBiomarkers: Omit<BiomarkerInput, 'value'>[] = [
   { name: 'ast', displayName: 'AST', unit: 'U/L', normalRangeMin: 10, normalRangeMax: 40, category: 'Liver Function' },
 ];
 
-export const ManualEntry: React.FC = () => {
+export const ManualEntry: React.FC<ManualEntryProps> = ({
+  initialBiomarkers = [],
+  showReviewMessage = false,
+  onBack,
+}) => {
   const navigate = useNavigate();
   const [testDate, setTestDate] = useState(new Date().toISOString().split('T')[0]);
   const [labName, setLabName] = useState('');
-  const [selectedBiomarkers, setSelectedBiomarkers] = useState<BiomarkerInput[]>([]);
-  const [showBiomarkerSelector, setShowBiomarkerSelector] = useState(true);
+  const [selectedBiomarkers, setSelectedBiomarkers] = useState<BiomarkerInput[]>(() => {
+    if (initialBiomarkers.length > 0) {
+      return initialBiomarkers.map((b) => ({
+        name: b.name,
+        displayName: b.displayName,
+        value: b.value.toString(),
+        unit: b.unit,
+        normalRangeMin: b.normalRangeMin,
+        normalRangeMax: b.normalRangeMax,
+        category: b.category,
+      }));
+    }
+    return [];
+  });
+  const [showBiomarkerSelector, setShowBiomarkerSelector] = useState(initialBiomarkers.length === 0);
 
   const handleAddBiomarker = (biomarker: Omit<BiomarkerInput, 'value'>) => {
     setSelectedBiomarkers(prev => [...prev, { ...biomarker, value: '' }]);
@@ -103,14 +138,38 @@ export const ManualEntry: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="text-gray-600 hover:text-gray-900 mb-4 flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        )}
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Enter Your Blood Test Results
+          {showReviewMessage ? 'Review Extracted Results' : 'Enter Your Blood Test Results'}
         </h1>
         <p className="text-gray-600">
-          Manually enter your biomarker values from your lab report
+          {showReviewMessage
+            ? 'We extracted these values from your PDF. Please review and correct any errors before continuing.'
+            : 'Manually enter your biomarker values from your lab report'}
         </p>
         <MinimalDisclaimer />
       </div>
+
+      {showReviewMessage && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex gap-3">
+          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium text-green-800">
+              Successfully extracted {selectedBiomarkers.length} biomarker{selectedBiomarkers.length !== 1 ? 's' : ''}
+            </p>
+            <p className="text-sm text-green-700 mt-1">
+              Review the values below and make any corrections needed. You can also add additional biomarkers.
+            </p>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Test Information */}
