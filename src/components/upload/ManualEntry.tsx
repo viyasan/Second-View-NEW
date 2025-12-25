@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Biomarker } from '../../types/bloodTest';
 import { calculateBiomarkerStatus } from '../../data/sampleBloodTest';
 import { MinimalDisclaimer } from '../landing/Disclaimer';
-import { Plus, Trash2, Save, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Trash2, Save, CheckCircle } from 'lucide-react';
 
 interface BiomarkerInput {
   name: string;
