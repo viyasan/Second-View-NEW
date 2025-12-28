@@ -4,10 +4,12 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Dashboard } from '../components/dashboard';
+import { useAuth } from '../context/AuthContext';
 
 export const DashboardPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   const { biomarkers, testDate, labName } = location.state || {};
 
@@ -28,7 +30,7 @@ export const DashboardPage: React.FC = () => {
       biomarkers={biomarkers}
       testDate={testDate}
       labName={labName}
-      userName={undefined} // Will be populated after auth implementation
+      userName={profile?.name || undefined}
     />
   );
 };
