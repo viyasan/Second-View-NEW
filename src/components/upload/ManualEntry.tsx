@@ -121,8 +121,8 @@ export const ManualEntry: React.FC<ManualEntryProps> = ({
       return;
     }
 
-    // Navigate to results with state
-    navigate('/results', {
+    // Navigate to dashboard with state
+    navigate('/dashboard', {
       state: {
         biomarkers,
         testDate,
