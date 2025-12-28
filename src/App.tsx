@@ -1,12 +1,109 @@
 // App.tsx
 
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { LandingPage } from './pages/LandingPage';
 import { DemoPage } from './pages/DemoPage';
 import { UploadPage } from './pages/UploadPage';
 import { ResultsPage } from './pages/ResultsPage';
 import { DashboardPage } from './pages/DashboardPage';
-import { ArrowRight } from 'lucide-react';
+import { SignInPage } from './pages/SignInPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { OnboardingPage } from './pages/OnboardingPage';
+import { ArrowRight, LogOut } from 'lucide-react';
+
+// Header component with auth buttons
+const Header: React.FC = () => {
+  const { user, profile, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  return (
+    <header className="bg-cream/80 backdrop-blur-md border-b border-warm-gray-100 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-8 lg:px-16 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-charcoal rounded-xl flex items-center justify-center">
+              <span className="text-lime font-bold text-lg">S</span>
+            </div>
+            <span className="text-xl font-semibold text-charcoal">SecondView</span>
+          </Link>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              to="/"
+              className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
+            >
+              Home
+            </Link>
+            <Link
+              to="/demo"
+              className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
+            >
+              Demo
+            </Link>
+
+            {/* Auth buttons */}
+            {loading ? (
+              <div className="w-20 h-10 bg-warm-gray-100 rounded-full animate-pulse" />
+            ) : user ? (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/dashboard"
+                  className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
+                >
+                  Dashboard
+                </Link>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-warm-gray-500">
+                    {profile?.name || user.email?.split('@')[0]}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="p-2 text-warm-gray-400 hover:text-charcoal transition-colors"
+                    title="Sign out"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/signin"
+                  className="px-5 py-2.5 text-charcoal font-medium hover:text-warm-gray-600 transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-white rounded-full font-medium hover:bg-warm-gray-800 transition-all group"
+                >
+                  Sign Up
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+            )}
+          </nav>
+
+          {/* Mobile menu button */}
+          <button className="md:hidden p-2 text-charcoal">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
 
 // Layout component that conditionally shows header/footer
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -21,49 +118,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen bg-cream flex flex-col">
       {/* Header */}
-      <header className="bg-cream/80 backdrop-blur-md border-b border-warm-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-8 lg:px-16 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-charcoal rounded-xl flex items-center justify-center">
-                <span className="text-lime font-bold text-lg">S</span>
-              </div>
-              <span className="text-xl font-semibold text-charcoal">SecondView</span>
-            </Link>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
-              <Link
-                to="/"
-                className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
-              >
-                Home
-              </Link>
-              <Link
-                to="/demo"
-                className="text-warm-gray-500 hover:text-charcoal transition-colors font-medium"
-              >
-                Demo
-              </Link>
-              <Link
-                to="/upload"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-white rounded-full font-medium hover:bg-warm-gray-800 transition-all group"
-              >
-                Get Started
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </nav>
-
-            {/* Mobile menu button */}
-            <button className="md:hidden p-2 text-charcoal">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="flex-1">
@@ -136,18 +191,62 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+function AppRoutes() {
+  return (
+    <Layout>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+
+        {/* Onboarding route - requires auth but not onboarding completion */}
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute requireOnboarding={false}>
+              <OnboardingPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protected routes - require auth and completed onboarding */}
+        <Route
+          path="/upload"
+          element={
+            <ProtectedRoute>
+              <UploadPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/results"
+          element={
+            <ProtectedRoute>
+              <ResultsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Layout>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/demo" element={<DemoPage />} />
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-        </Routes>
-      </Layout>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </Router>
   );
 }
