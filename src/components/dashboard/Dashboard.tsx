@@ -10,16 +10,21 @@ import {
   calculateTestDates,
   getAllOrganHealth,
   getLiverKidneysHealth,
-  OrganSystem
+  getBiomarkersForOrgan,
+  OrganSystem,
+  ORGAN_BIOMARKER_MAP,
+  BIOMARKER_INFO,
+  CATEGORY_INFO
 } from '../../utils/organMapping';
 
 import { BodyVisualization } from './BodyVisualization';
 import { HealthScoreCard } from './HealthScoreCard';
 import { BioMarkersSummaryCard } from './BioMarkersSummaryCard';
 import { LastBloodTestCard } from './LastBloodTestCard';
+import { BiomarkerCard } from './BiomarkerCard';
 import { DashboardTabsPill } from './DashboardTabs';
 import { DetailsSection } from './ExpandableDetails';
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, Lightbulb, CheckCircle2 } from 'lucide-react';
 
 interface DashboardProps {
   biomarkers: Biomarker[];
@@ -37,14 +42,30 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [selectedOrgan, setSelectedOrgan] = useState<OrganSystem | null>(null);
 
+  const [selectedBiomarker, setSelectedBiomarker] = useState<string | null>(null);
+
   // Calculate all derived data
   const healthScore = useMemo(() => calculateHealthScore(biomarkers), [biomarkers]);
   const biomarkerSummary = useMemo(() => getBiomarkerSummary(biomarkers), [biomarkers]);
   const testDates = useMemo(() => calculateTestDates(testDate), [testDate]);
   const organHealth = useMemo(() => getAllOrganHealth(biomarkers), [biomarkers]);
-  // liverKidneysHealth will be used when Liver tab shows combined liver+kidney data
-  const _liverKidneysHealth = useMemo(() => getLiverKidneysHealth(biomarkers), [biomarkers]);
-  void _liverKidneysHealth; // Suppress unused warning for future use
+  const liverKidneysHealth = useMemo(() => getLiverKidneysHealth(biomarkers), [biomarkers]);
+
+  // Get biomarkers for the current tab
+  const getTabBiomarkers = useMemo(() => {
+    const tabToOrgans: Record<TabId, OrganSystem[]> = {
+      overview: [],
+      heart: ['heart'],
+      liver: ['liver', 'kidneys'],
+      thyroid: ['thyroid'],
+      vitamins: ['vitamins']
+    };
+
+    const organs = tabToOrgans[activeTab];
+    if (organs.length === 0) return [];
+
+    return organs.flatMap(organ => getBiomarkersForOrgan(biomarkers, organ));
+  }, [activeTab, biomarkers]);
 
   // Generate greeting based on time of day
   const getGreeting = () => {
@@ -76,6 +97,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // Handle tab change
   const handleTabChange = (tab: TabId) => {
     setActiveTab(tab);
+    setSelectedBiomarker(null); // Reset selected biomarker when changing tabs
 
     // Map tab to organ for highlighting
     const tabToOrgan: Record<TabId, OrganSystem | null> = {
@@ -87,6 +109,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
     };
 
     setSelectedOrgan(tabToOrgan[tab]);
+  };
+
+  // Handle biomarker card click
+  const handleBiomarkerClick = (biomarkerName: string) => {
+    setSelectedBiomarker(biomarkerName === selectedBiomarker ? null : biomarkerName);
   };
 
   return (
@@ -159,77 +186,144 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* Right Column - Stats Cards */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <HealthScoreCard
-                score={healthScore.score}
-                label={healthScore.label}
-                description={healthScore.description}
-              />
-              <BioMarkersSummaryCard
-                total={biomarkerSummary.total}
-                inRange={biomarkerSummary.inRange}
-                flagged={biomarkerSummary.flagged}
-                borderline={biomarkerSummary.borderline}
-                critical={biomarkerSummary.critical}
-              />
-              <LastBloodTestCard
-                testDate={testDates.formattedTestDate}
-                daysSinceTest={testDates.daysSinceTest}
-                nextTestDate={testDates.formattedNextTestDate}
-                daysUntilNextTest={testDates.daysUntilNextTest}
-              />
-            </div>
-
-            {/* Expandable Details Section */}
-            <DetailsSection>
-              {/* Content will be added here based on tab/selection */}
-              {selectedOrgan && (
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-charcoal mb-4">
-                    {organHealth[selectedOrgan]?.displayName} Details
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {organHealth[selectedOrgan]?.biomarkers.map((marker) => (
-                      <div
-                        key={marker.name}
-                        className="bg-white rounded-xl p-4 border border-warm-gray-100"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-warm-gray-600">
-                            {marker.displayName}
-                          </span>
-                          <span
-                            className={`text-xs px-2 py-0.5 rounded-full ${
-                              marker.status === 'normal'
-                                ? 'bg-green-100 text-green-700'
-                                : marker.status === 'borderline-high' || marker.status === 'borderline-low'
-                                ? 'bg-yellow-100 text-yellow-700'
-                                : 'bg-red-100 text-red-700'
-                            }`}
-                          >
-                            {marker.status === 'normal' ? 'Normal' :
-                             marker.status === 'borderline-high' ? 'Borderline High' :
-                             marker.status === 'borderline-low' ? 'Borderline Low' :
-                             marker.status === 'high' ? 'High' : 'Low'}
-                          </span>
-                        </div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold text-charcoal">
-                            {marker.value}
-                          </span>
-                          <span className="text-sm text-warm-gray-400">
-                            {marker.unit}
-                          </span>
-                        </div>
-                        <div className="text-xs text-warm-gray-400 mt-1">
-                          Range: {marker.normalRangeMin} - {marker.normalRangeMax} {marker.unit}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {/* Overview Tab - Show summary cards */}
+            {activeTab === 'overview' ? (
+              <>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <HealthScoreCard
+                    score={healthScore.score}
+                    label={healthScore.label}
+                    description={healthScore.description}
+                  />
+                  <BioMarkersSummaryCard
+                    total={biomarkerSummary.total}
+                    inRange={biomarkerSummary.inRange}
+                    flagged={biomarkerSummary.flagged}
+                    borderline={biomarkerSummary.borderline}
+                    critical={biomarkerSummary.critical}
+                  />
+                  <LastBloodTestCard
+                    testDate={testDates.formattedTestDate}
+                    daysSinceTest={testDates.daysSinceTest}
+                    nextTestDate={testDates.formattedNextTestDate}
+                    daysUntilNextTest={testDates.daysUntilNextTest}
+                  />
                 </div>
-              )}
-            </DetailsSection>
+
+                {/* Overview Details Section */}
+                <DetailsSection>
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-charcoal mb-2">
+                      {CATEGORY_INFO.overview.title}
+                    </h3>
+                    <p className="text-warm-gray-600 mb-4">
+                      {CATEGORY_INFO.overview.description}
+                    </p>
+                    <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl">
+                      <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-blue-900 mb-2">Quick Tips</p>
+                        <ul className="space-y-1">
+                          {CATEGORY_INFO.overview.tips.map((tip, i) => (
+                            <li key={i} className="text-sm text-blue-800 flex items-center gap-2">
+                              <span className="w-1 h-1 bg-blue-400 rounded-full" />
+                              {tip}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </DetailsSection>
+              </>
+            ) : (
+              <>
+                {/* Category Tab - Show biomarker cards */}
+                <div className={`grid gap-4 mb-6 ${
+                  getTabBiomarkers.length <= 2 ? 'grid-cols-2' :
+                  getTabBiomarkers.length <= 4 ? 'grid-cols-2 lg:grid-cols-4' :
+                  'grid-cols-2 lg:grid-cols-3'
+                }`}>
+                  {getTabBiomarkers.map((biomarker) => (
+                    <BiomarkerCard
+                      key={biomarker.name}
+                      biomarker={biomarker}
+                      onClick={() => handleBiomarkerClick(biomarker.name)}
+                      isSelected={selectedBiomarker === biomarker.name}
+                    />
+                  ))}
+                </div>
+
+                {/* Category Details Section */}
+                <DetailsSection>
+                  <div className="p-6">
+                    {selectedBiomarker && BIOMARKER_INFO[selectedBiomarker] ? (
+                      <>
+                        <h3 className="text-lg font-semibold text-charcoal mb-2">
+                          {BIOMARKER_INFO[selectedBiomarker].displayName}
+                        </h3>
+                        <p className="text-warm-gray-600 mb-4">
+                          {BIOMARKER_INFO[selectedBiomarker].importance}
+                        </p>
+
+                        {BIOMARKER_INFO[selectedBiomarker].funFact && (
+                          <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-xl mb-4">
+                            <Lightbulb className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-purple-900">Did you know?</p>
+                              <p className="text-sm text-purple-800">
+                                {BIOMARKER_INFO[selectedBiomarker].funFact}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="p-4 bg-green-50 rounded-xl">
+                          <p className="text-sm font-medium text-green-900 mb-3 flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Actions You Can Take
+                          </p>
+                          <ul className="space-y-2">
+                            {BIOMARKER_INFO[selectedBiomarker].actions.map((action, i) => (
+                              <li key={i} className="text-sm text-green-800 flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 flex-shrink-0" />
+                                {action}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="text-lg font-semibold text-charcoal mb-2">
+                          {CATEGORY_INFO[activeTab].title}
+                        </h3>
+                        <p className="text-warm-gray-600 mb-4">
+                          {CATEGORY_INFO[activeTab].description}
+                        </p>
+                        <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl">
+                          <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-blue-900 mb-2">Quick Tips</p>
+                            <ul className="space-y-1">
+                              {CATEGORY_INFO[activeTab].tips.map((tip, i) => (
+                                <li key={i} className="text-sm text-blue-800 flex items-center gap-2">
+                                  <span className="w-1 h-1 bg-blue-400 rounded-full" />
+                                  {tip}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        <p className="text-sm text-warm-gray-400 mt-4 text-center">
+                          Click on a biomarker card above to see detailed information
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </DetailsSection>
+              </>
+            )}
           </div>
         </div>
 

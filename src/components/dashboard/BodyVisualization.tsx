@@ -10,7 +10,7 @@ interface BodyVisualizationProps {
   selectedOrgan?: OrganSystem | null;
 }
 
-// Color definitions for organ status
+// Color definitions for organ status (only good and attention - no red to avoid causing worry)
 const STATUS_COLORS = {
   good: {
     fill: '#22c55e',      // green-500
@@ -21,11 +21,6 @@ const STATUS_COLORS = {
     fill: '#eab308',      // yellow-500
     glow: '#fde047',      // yellow-300
     stroke: '#ca8a04'     // yellow-600
-  },
-  critical: {
-    fill: '#ef4444',      // red-500
-    glow: '#fca5a5',      // red-300
-    stroke: '#dc2626'     // red-600
   }
 };
 
@@ -80,14 +75,6 @@ export const BodyVisualization: React.FC<BodyVisualizationProps> = ({
 
           <filter id="glowWarning" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          <filter id="glowCritical" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="5" result="coloredBlur" />
             <feMerge>
               <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
@@ -246,10 +233,7 @@ export const BodyVisualization: React.FC<BodyVisualizationProps> = ({
           <text x="20" y="12" fontSize="10" fill="#525252">Good</text>
 
           <circle cx="8" cy="26" r="6" fill={STATUS_COLORS.warning.fill} />
-          <text x="20" y="30" fontSize="10" fill="#525252">Warning</text>
-
-          <circle cx="8" cy="44" r="6" fill={STATUS_COLORS.critical.fill} />
-          <text x="20" y="48" fontSize="10" fill="#525252">Attention</text>
+          <text x="20" y="30" fontSize="10" fill="#525252">Attention</text>
         </g>
       </svg>
 
@@ -261,9 +245,7 @@ export const BodyVisualization: React.FC<BodyVisualizationProps> = ({
               {organHealth[selectedOrgan]?.displayName}
             </p>
             <p className={`text-sm ${
-              organHealth[selectedOrgan]?.status === 'good' ? 'text-green-600' :
-              organHealth[selectedOrgan]?.status === 'warning' ? 'text-yellow-600' :
-              'text-red-600'
+              organHealth[selectedOrgan]?.status === 'good' ? 'text-green-600' : 'text-yellow-600'
             }`}>
               {organHealth[selectedOrgan]?.inRangeCount}/{organHealth[selectedOrgan]?.totalCount} markers in range
             </p>

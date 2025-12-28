@@ -8,7 +8,7 @@ export type OrganSystem = 'heart' | 'liver' | 'kidneys' | 'thyroid' | 'vitamins'
 export interface OrganHealth {
   organ: OrganSystem;
   displayName: string;
-  status: 'good' | 'warning' | 'critical';
+  status: 'good' | 'warning';
   biomarkers: Biomarker[];
   inRangeCount: number;
   totalCount: number;
@@ -77,6 +77,372 @@ export const DASHBOARD_TABS = [
 ] as const;
 
 export type TabId = typeof DASHBOARD_TABS[number]['id'];
+
+// Biomarker information for detailed explanations
+export interface BiomarkerInfo {
+  name: string;
+  displayName: string;
+  importance: string;
+  actions: string[];
+  funFact?: string;
+}
+
+export const BIOMARKER_INFO: Record<string, BiomarkerInfo> = {
+  // Heart biomarkers
+  ldl: {
+    name: 'ldl',
+    displayName: 'LDL Cholesterol',
+    importance: 'LDL (Low-Density Lipoprotein) is often called "bad" cholesterol because high levels can lead to plaque buildup in arteries, increasing risk of heart disease and stroke.',
+    actions: [
+      'Reduce saturated and trans fats in your diet',
+      'Increase fiber intake with oats, beans, and vegetables',
+      'Exercise regularly (aim for 150 minutes per week)',
+      'Consider plant sterols and stanols'
+    ],
+    funFact: 'Your liver produces about 75% of your cholesterol naturally.'
+  },
+  hdl: {
+    name: 'hdl',
+    displayName: 'HDL Cholesterol',
+    importance: 'HDL (High-Density Lipoprotein) is "good" cholesterol that helps remove other forms of cholesterol from your bloodstream, protecting against heart disease.',
+    actions: [
+      'Exercise regularly to boost HDL levels',
+      'Choose healthy fats like olive oil and avocados',
+      'Quit smoking if applicable',
+      'Maintain a healthy weight'
+    ],
+    funFact: 'HDL acts like a garbage truck, collecting excess cholesterol and taking it to your liver for disposal.'
+  },
+  total_cholesterol: {
+    name: 'total_cholesterol',
+    displayName: 'Total Cholesterol',
+    importance: 'Total cholesterol is the sum of all cholesterol in your blood. While important, the ratio of HDL to LDL matters more than the total number alone.',
+    actions: [
+      'Focus on improving HDL/LDL ratio',
+      'Eat heart-healthy foods like fish, nuts, and vegetables',
+      'Limit processed and fried foods',
+      'Stay physically active'
+    ]
+  },
+  triglycerides: {
+    name: 'triglycerides',
+    displayName: 'Triglycerides',
+    importance: 'Triglycerides are fats in your blood used for energy. High levels combined with low HDL or high LDL can increase risk of heart disease.',
+    actions: [
+      'Limit sugar and refined carbohydrates',
+      'Reduce alcohol consumption',
+      'Choose healthy fats over saturated fats',
+      'Exercise regularly to help lower levels'
+    ],
+    funFact: 'After a meal, triglycerides can increase significantly, which is why fasting blood tests are often required.'
+  },
+  potassium: {
+    name: 'potassium',
+    displayName: 'Potassium',
+    importance: 'Potassium is essential for proper heart rhythm, muscle function, and maintaining healthy blood pressure levels.',
+    actions: [
+      'Eat potassium-rich foods like bananas, potatoes, and spinach',
+      'Balance sodium and potassium intake',
+      'Stay hydrated',
+      'Consult your doctor about any supplements'
+    ]
+  },
+  sodium: {
+    name: 'sodium',
+    displayName: 'Sodium',
+    importance: 'Sodium helps regulate fluid balance and blood pressure. Both high and low levels can affect heart function and overall health.',
+    actions: [
+      'Monitor salt intake (aim for less than 2,300mg daily)',
+      'Stay properly hydrated',
+      'Check labels for hidden sodium in processed foods',
+      'Balance with potassium-rich foods'
+    ]
+  },
+  calcium: {
+    name: 'calcium',
+    displayName: 'Calcium',
+    importance: 'Calcium is vital for heart muscle contractions, bone health, nerve signaling, and blood clotting.',
+    actions: [
+      'Include dairy or fortified alternatives in your diet',
+      'Get adequate vitamin D for calcium absorption',
+      'Consider leafy greens as calcium sources',
+      'Discuss supplements with your healthcare provider'
+    ]
+  },
+
+  // Liver biomarkers
+  alt: {
+    name: 'alt',
+    displayName: 'ALT (Liver Enzyme)',
+    importance: 'ALT (Alanine Aminotransferase) is an enzyme found mainly in the liver. Elevated levels may indicate liver inflammation or damage.',
+    actions: [
+      'Limit alcohol consumption',
+      'Maintain a healthy weight',
+      'Avoid unnecessary medications that stress the liver',
+      'Eat a balanced diet with plenty of vegetables'
+    ],
+    funFact: 'Your liver performs over 500 vital functions, including filtering blood and producing bile.'
+  },
+  ast: {
+    name: 'ast',
+    displayName: 'AST (Liver Enzyme)',
+    importance: 'AST (Aspartate Aminotransferase) is found in the liver and other organs. High levels may suggest liver issues or muscle damage.',
+    actions: [
+      'Reduce alcohol intake',
+      'Exercise moderately (intense exercise can temporarily raise AST)',
+      'Review medications with your doctor',
+      'Maintain a liver-friendly diet'
+    ]
+  },
+  albumin: {
+    name: 'albumin',
+    displayName: 'Albumin',
+    importance: 'Albumin is a protein made by the liver that keeps fluid in your bloodstream and carries hormones, vitamins, and enzymes throughout your body.',
+    actions: [
+      'Ensure adequate protein intake',
+      'Stay hydrated',
+      'Address any underlying liver or kidney issues',
+      'Eat a balanced, nutritious diet'
+    ]
+  },
+  bilirubin: {
+    name: 'bilirubin',
+    displayName: 'Bilirubin',
+    importance: 'Bilirubin is produced when red blood cells break down. The liver processes it for removal. High levels can cause jaundice and may indicate liver problems.',
+    actions: [
+      'Stay well-hydrated',
+      'Avoid excessive alcohol',
+      'Eat foods that support liver health',
+      'Follow up with your doctor if levels are elevated'
+    ]
+  },
+
+  // Kidney biomarkers
+  creatinine: {
+    name: 'creatinine',
+    displayName: 'Creatinine',
+    importance: 'Creatinine is a waste product from muscle metabolism filtered by your kidneys. High levels may indicate reduced kidney function.',
+    actions: [
+      'Stay well-hydrated throughout the day',
+      'Limit excessive protein intake if advised',
+      'Avoid NSAIDs that can stress kidneys',
+      'Monitor blood pressure regularly'
+    ],
+    funFact: 'Your kidneys filter about 120-150 quarts of blood daily to produce 1-2 quarts of urine.'
+  },
+  egfr: {
+    name: 'egfr',
+    displayName: 'eGFR (Kidney Function)',
+    importance: 'eGFR (estimated Glomerular Filtration Rate) measures how well your kidneys filter waste. It\'s a key indicator of overall kidney health.',
+    actions: [
+      'Control blood pressure and blood sugar',
+      'Stay hydrated but don\'t overdo it',
+      'Limit salt intake',
+      'Avoid smoking'
+    ]
+  },
+  uric_acid: {
+    name: 'uric_acid',
+    displayName: 'Uric Acid',
+    importance: 'Uric acid is produced when the body breaks down purines. High levels can lead to gout and may affect kidney function.',
+    actions: [
+      'Limit purine-rich foods (red meat, organ meats, shellfish)',
+      'Reduce alcohol, especially beer',
+      'Stay well-hydrated',
+      'Maintain a healthy weight'
+    ]
+  },
+
+  // Thyroid biomarkers
+  tsh: {
+    name: 'tsh',
+    displayName: 'TSH (Thyroid)',
+    importance: 'TSH (Thyroid-Stimulating Hormone) regulates your thyroid gland. Abnormal levels can indicate an underactive or overactive thyroid, affecting metabolism, energy, and mood.',
+    actions: [
+      'Ensure adequate iodine and selenium intake',
+      'Manage stress levels',
+      'Get regular sleep',
+      'Discuss any symptoms with your doctor'
+    ],
+    funFact: 'Your thyroid gland, shaped like a butterfly, controls the speed of your metabolism.'
+  },
+
+  // Vitamin biomarkers
+  vitamin_d: {
+    name: 'vitamin_d',
+    displayName: 'Vitamin D',
+    importance: 'Vitamin D is crucial for bone health, immune function, and mood regulation. Many people are deficient, especially in northern climates.',
+    actions: [
+      'Get 10-30 minutes of midday sunlight when possible',
+      'Eat vitamin D-rich foods (fatty fish, fortified dairy)',
+      'Consider supplementation if deficient',
+      'Pair with vitamin K2 for optimal absorption'
+    ],
+    funFact: 'Vitamin D is actually a hormone that your skin produces when exposed to sunlight.'
+  },
+  vitamin_b12: {
+    name: 'vitamin_b12',
+    displayName: 'Vitamin B12',
+    importance: 'Vitamin B12 is essential for nerve function, DNA synthesis, and red blood cell formation. Deficiency can cause fatigue, weakness, and neurological issues.',
+    actions: [
+      'Include B12-rich foods (meat, fish, dairy, eggs)',
+      'Consider fortified foods if vegetarian/vegan',
+      'Discuss supplementation with your doctor',
+      'Check for absorption issues if persistently low'
+    ]
+  },
+  iron: {
+    name: 'iron',
+    displayName: 'Iron',
+    importance: 'Iron is essential for making hemoglobin, which carries oxygen in your blood. Low iron causes anemia and fatigue; high iron can damage organs.',
+    actions: [
+      'Eat iron-rich foods (lean meat, beans, spinach)',
+      'Pair with vitamin C for better absorption',
+      'Avoid tea/coffee with iron-rich meals',
+      'Don\'t supplement without doctor\'s guidance'
+    ]
+  },
+  ferritin: {
+    name: 'ferritin',
+    displayName: 'Ferritin',
+    importance: 'Ferritin reflects your body\'s iron stores. Low levels precede anemia; high levels may indicate inflammation or iron overload.',
+    actions: [
+      'Address underlying causes if low',
+      'For high levels, reduce iron-rich foods temporarily',
+      'Stay hydrated',
+      'Follow up with your healthcare provider'
+    ]
+  },
+
+  // Blood biomarkers
+  glucose: {
+    name: 'glucose',
+    displayName: 'Glucose (Blood Sugar)',
+    importance: 'Blood glucose is your body\'s main energy source. Consistently high levels can indicate prediabetes or diabetes, affecting many organs over time.',
+    actions: [
+      'Limit refined sugars and simple carbs',
+      'Exercise regularly to improve insulin sensitivity',
+      'Eat fiber-rich foods to stabilize blood sugar',
+      'Maintain a healthy weight'
+    ],
+    funFact: 'Your brain uses about 20% of your body\'s glucose, despite being only 2% of your body weight.'
+  },
+  hba1c: {
+    name: 'hba1c',
+    displayName: 'HbA1c (3-Month Average)',
+    importance: 'HbA1c shows your average blood sugar over 2-3 months. It\'s a key marker for diabetes management and risk assessment.',
+    actions: [
+      'Focus on consistent, balanced eating habits',
+      'Stay physically active daily',
+      'Monitor blood sugar if recommended',
+      'Work with your healthcare team on targets'
+    ]
+  },
+  wbc: {
+    name: 'wbc',
+    displayName: 'White Blood Cells',
+    importance: 'White blood cells are your immune system\'s soldiers. High counts may indicate infection or inflammation; low counts may affect your ability to fight illness.',
+    actions: [
+      'Get adequate sleep for immune health',
+      'Manage stress levels',
+      'Eat a nutrient-rich diet',
+      'Stay up-to-date on vaccinations'
+    ]
+  },
+  rbc: {
+    name: 'rbc',
+    displayName: 'Red Blood Cells',
+    importance: 'Red blood cells carry oxygen throughout your body. Abnormal counts can cause fatigue, weakness, or other health issues.',
+    actions: [
+      'Ensure adequate iron, B12, and folate intake',
+      'Stay hydrated',
+      'Address any chronic health conditions',
+      'Exercise regularly for healthy circulation'
+    ]
+  },
+  hemoglobin: {
+    name: 'hemoglobin',
+    displayName: 'Hemoglobin',
+    importance: 'Hemoglobin is the protein in red blood cells that carries oxygen. Low levels (anemia) cause fatigue; high levels may indicate other conditions.',
+    actions: [
+      'Eat iron-rich foods paired with vitamin C',
+      'Include B12 and folate in your diet',
+      'Address any underlying bleeding issues',
+      'Stay at altitude gradually if traveling'
+    ]
+  },
+  hematocrit: {
+    name: 'hematocrit',
+    displayName: 'Hematocrit',
+    importance: 'Hematocrit measures the percentage of blood that\'s red blood cells. It helps assess hydration status and conditions like anemia or polycythemia.',
+    actions: [
+      'Stay well-hydrated',
+      'Address nutritional deficiencies',
+      'Avoid excessive alcohol',
+      'Follow up on any abnormal results'
+    ]
+  },
+  platelets: {
+    name: 'platelets',
+    displayName: 'Platelets',
+    importance: 'Platelets help your blood clot. Low counts increase bleeding risk; high counts may increase clotting risk.',
+    actions: [
+      'Avoid unnecessary aspirin/NSAIDs if low',
+      'Eat foods rich in folate and B12',
+      'Report unusual bleeding to your doctor',
+      'Stay physically active'
+    ]
+  }
+};
+
+// Category descriptions for the expanded details section
+export const CATEGORY_INFO: Record<TabId, { title: string; description: string; tips: string[] }> = {
+  overview: {
+    title: 'Your Health Overview',
+    description: 'This is a comprehensive view of all your biomarkers. Click on any organ in the body visualization to explore specific areas.',
+    tips: [
+      'Regular blood tests help catch issues early',
+      'Trends over time matter more than single readings',
+      'Discuss any concerns with your healthcare provider'
+    ]
+  },
+  heart: {
+    title: 'Cardiovascular Health',
+    description: 'These markers help assess your heart health and risk of cardiovascular disease. Maintaining healthy levels protects against heart attacks and strokes.',
+    tips: [
+      'Heart disease is largely preventable with lifestyle changes',
+      'The ratio of HDL to total cholesterol is important',
+      'Regular exercise strengthens your heart muscle'
+    ]
+  },
+  liver: {
+    title: 'Liver & Kidney Function',
+    description: 'Your liver and kidneys work together to filter toxins and maintain fluid balance. These markers indicate how well these vital organs are functioning.',
+    tips: [
+      'Your liver can regenerate, but prevention is better',
+      'Stay hydrated to support kidney function',
+      'Limit alcohol and processed foods'
+    ]
+  },
+  thyroid: {
+    title: 'Thyroid Function',
+    description: 'Your thyroid controls metabolism, energy levels, and many body processes. Even small imbalances can significantly affect how you feel.',
+    tips: [
+      'Thyroid issues are common and very treatable',
+      'Symptoms can be subtle and develop slowly',
+      'Regular monitoring helps optimize treatment'
+    ]
+  },
+  vitamins: {
+    title: 'Vitamins & Nutrients',
+    description: 'These essential nutrients support everything from energy production to immune function. Optimal levels help you feel your best.',
+    tips: [
+      'Food sources are usually better than supplements',
+      'Some vitamins need others for proper absorption',
+      'Deficiencies are common and often easy to fix'
+    ]
+  }
+};
 
 // Biomarker importance weights for health score calculation
 export const BIOMARKER_WEIGHTS: Record<string, number> = {
@@ -190,22 +556,21 @@ export function getOrganHealth(
   const totalCount = organBiomarkers.length;
   const percentage = totalCount > 0 ? Math.round((inRangeCount / totalCount) * 100) : 100;
 
-  let status: 'good' | 'warning' | 'critical';
+  // Only use 'good' and 'warning' statuses to avoid causing worry
+  let status: 'good' | 'warning';
 
   if (percentage >= 80) {
     status = 'good';
-  } else if (percentage >= 50) {
-    status = 'warning';
   } else {
-    status = 'critical';
+    status = 'warning';
   }
 
-  // Check for any critical (high/low) markers
-  const hasCriticalMarker = organBiomarkers.some(b =>
+  // Check for any flagged (high/low) markers
+  const hasFlaggedMarker = organBiomarkers.some(b =>
     b.status === 'high' || b.status === 'low'
   );
 
-  if (hasCriticalMarker && status === 'good') {
+  if (hasFlaggedMarker && status === 'good') {
     status = 'warning';
   }
 
@@ -244,10 +609,9 @@ export function getLiverKidneysHealth(biomarkers: Biomarker[]): OrganHealth {
   const totalCount = liverHealth.totalCount + kidneysHealth.totalCount;
   const percentage = totalCount > 0 ? Math.round((inRangeCount / totalCount) * 100) : 100;
 
-  let status: 'good' | 'warning' | 'critical';
-  if (liverHealth.status === 'critical' || kidneysHealth.status === 'critical') {
-    status = 'critical';
-  } else if (liverHealth.status === 'warning' || kidneysHealth.status === 'warning') {
+  // Only use 'good' and 'warning' statuses
+  let status: 'good' | 'warning';
+  if (liverHealth.status === 'warning' || kidneysHealth.status === 'warning') {
     status = 'warning';
   } else {
     status = 'good';
