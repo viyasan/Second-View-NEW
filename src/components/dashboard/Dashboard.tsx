@@ -9,10 +9,8 @@ import {
   getBiomarkerSummary,
   calculateTestDates,
   getAllOrganHealth,
-  getLiverKidneysHealth,
   getBiomarkersForOrgan,
   OrganSystem,
-  ORGAN_BIOMARKER_MAP,
   BIOMARKER_INFO,
   CATEGORY_INFO
 } from '../../utils/organMapping';
@@ -49,7 +47,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const biomarkerSummary = useMemo(() => getBiomarkerSummary(biomarkers), [biomarkers]);
   const testDates = useMemo(() => calculateTestDates(testDate), [testDate]);
   const organHealth = useMemo(() => getAllOrganHealth(biomarkers), [biomarkers]);
-  const liverKidneysHealth = useMemo(() => getLiverKidneysHealth(biomarkers), [biomarkers]);
 
   // Get biomarkers for the current tab
   const getTabBiomarkers = useMemo(() => {
